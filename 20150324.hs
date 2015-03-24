@@ -128,10 +128,43 @@ baseExemplo =
  [("Sergio","O Senhor dos Aneis"),
  ("Andre","Duna"),
  ("Fernando","Jonathan Strange & Mr. Norrell"), 
- ("Fernando","A Game of Thrones")]
+ ("Fernando","The Game of Thrones")]
 
 livros :: BancoDados -> Pessoa -> [Livro]
 livros [] ps = []
 livros ((p,l):bd) ps
-   |p == ps = l : (livros (tail bd) ps)
-   |otherwise = (livros (tail bd) ps)
+   |p == ps = l : (livros bd ps)
+   |otherwise = livros bd ps
+
+livros2 :: BancoDados -> Pessoa -> [Livro]
+livros2 bd ppl = [l|(p, l)<-baseExemplo, ppl == p]
+
+emprestimo :: BancoDados -> Livro -> [Pessoa]
+emprestimo [] liv = []
+emprestimo ((p,l):bd) liv
+   |l == liv = p : (emprestimo bd liv)
+   |otherwise = (emprestimo bd liv)
+
+emprestado :: BancoDados -> Livro -> Bool
+emprestado [] liv = False
+emprestado ((p,l):bd) liv
+   |l == liv = True
+   |otherwise = emprestado bd liv
+
+qtdEmprestimos :: BancoDados -> Pessoa -> Int
+qtdEmprestimos bd ppl
+  |bd == [] = 0
+  |fst(head bd) == ppl = (qtdEmprestimos (tail bd) ppl) +1
+  |otherwise = qtdEmprestimos (tail bd) ppl
+
+emprestar :: BancoDados -> Pessoa -> Livro ->  BancoDados
+emprestar bd p l 
+   |p == "" || l == "" = bd
+   |otherwise = (p,l):bd
+
+devolver :: BancoDados -> Pessoa -> Livro ->  BancoDados
+devolver ((p,l):bd) pp liv
+  |l == "" = (p,l) : devolver bd pp liv
+  |p == "" = (p,l) : devolver bd pp liv
+  |p == pp && l == liv = bd
+  |otherwise = (p,l) : devolver bd pp liv
