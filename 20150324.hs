@@ -1,3 +1,4 @@
+-- quicksort
 getMinor :: Int -> [Int] -> [Int]
 getMinor x [] = []
 getMinor x (l:ls)
@@ -14,7 +15,8 @@ quickS :: [Int] -> [Int]
 quickS [] = []
 quickS (l:ls) = quickS (getMinor l ls) ++ (l:[]) ++ quickS (getMajor l ls)
 
--- merge & cia
+-- Trabalho 2
+-- mergesort
 
 divide :: [Int] -> ([Int],[Int])
 divide [] = ([],[])
@@ -33,3 +35,103 @@ merge [] b = b
 merge a b 
     |head a < head b = head a : (merge(tail a) b)
     |head a >= head b = head b : (merge a (tail b))
+
+-- heapsort
+
+len :: [Int] -> Int
+len [] = 0
+len l  = 1 + len (tail l)
+
+findEl :: [Int] -> Int -> Int
+findEl [] _ = -2000000000000000000
+findEl l  1 = head l
+findEl l n  = findEl (tail l) (n-1)
+
+
+findElPermuta :: [Int] -> Int -> ([Int],[Int])
+findElPermuta [] _ = ([],[])
+findElPermuta l  1 = ([], tail l)
+findElPermuta l n  = (head l : fst (findElPermuta (tail l) (n-1)), [] ++ snd (findElPermuta (tail l) (n-1)))
+
+permuta :: [Int] -> Int -> Int -> [Int]
+permuta [] _ _           = []
+permuta l 1 j
+             | j > len l = l
+	     | j == 1    = l
+             | otherwise = (findEl l j) : fst(findElPermuta (tail l) (j -1)) ++ [head l] ++ snd (findElPermuta (tail l) (j-1))
+permuta l i j
+             | i == j    = l
+	     | otherwise = head l : permuta (tail l) (i-1) (j-1)
+
+
+heapfy :: [Int] -> Int -> [Int]
+heapfy [] _ = []
+heapfy l  i | ((findEl l  (2*i)      > findEl l (i)) && (findEl l  (2*i)      > findEl l ((2*i) + 1))) = heapfy ((permuta l i  (2*i)))       (2*i)
+	    | ((findEl l ((2*i) + 1) > findEl l (i)) && (findEl l ((2*i) + 1) > findEl l  (2*i)))      = heapfy ((permuta l i ((2*i) + 1))) ((2*i) + 1)
+            |  (findEl l  (2*i)      > findEl l (i))                                                   = heapfy ((permuta l i  (2*i)))       (2*i)
+	    |  (findEl l ((2*i) + 1) > findEl l (i))                                                   = heapfy ((permuta l i ((2*i) + 1))) ((2*i) + 1)
+	    | otherwise = l
+
+
+buildMaxHeap :: [Int] -> Int -> [Int]
+buildMaxHeap [] _ = []
+buildMaxHeap l  1 = heapfy l 1
+buildMaxHeap l  i = buildMaxHeap(heapfy l i) (i-1)
+
+heapSort :: [Int] -> [Int]
+heapSort []     = []
+heapSort (a:[]) = [a]
+heapSort l  =  heapSort(buildMaxHeap (tail l) (len (tail l))) ++ [head l]
+
+-- Exercicios de aula
+
+getMax :: Int -> Int -> Int
+getMax a b
+   |a > b = a
+   |b > a = b
+
+getMin :: Int -> Int -> Int
+getMin a b
+   |a > b = b
+   |b > a = a
+
+getMedium :: Int -> Int -> Int -> Int
+getMedium a b c = a + b + c - (getMax (getMax a b) c) - (getMin (getMin a b) c)
+
+menorMaior :: Int -> Int -> Int -> (Int, Int)
+menorMaior a b c = ( (getMax (getMax a b) c) , (getMin (getMin a b) c))
+   
+ordenaTripla :: (Int, Int, Int) -> (Int, Int, Int)
+ordenaTripla (a, b, c) = ((getMin (getMin a b) c), getMedium a b c , (getMax (getMax a b) c))
+
+type Ponto = (Float, Float)
+type Reta = (Ponto, Ponto)
+
+firstCoor :: Ponto -> Float
+firstCoor (a, b) = a
+
+sndCoor :: Ponto -> Float
+sndCoor (a, b) = b
+
+isUpright :: Reta -> Bool
+isUpright ((a, b), (c,d)) 
+   |a == c = True
+   |otherwise = False
+
+--biblioteca
+type Pessoa = String
+type Livro = String
+type BancoDados = [(Pessoa, Livro)]
+
+baseExemplo :: BancoDados
+baseExemplo = 
+ [("Sergio","O Senhor dos Aneis"),
+ ("Andre","Duna"),
+ ("Fernando","Jonathan Strange & Mr. Norrell"), 
+ ("Fernando","A Game of Thrones")]
+
+livros :: BancoDados -> Pessoa -> [Livro]
+livros [] ps = []
+livros ((p,l):bd) ps
+   |p == ps = l : (livros (tail bd) ps)
+   |otherwise = (livros (tail bd) ps)
