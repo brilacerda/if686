@@ -37,7 +37,6 @@ merge a b
     |head a >= head b = head b : (merge a (tail b))
 
 -- heapsort
-
 len :: [Int] -> Int
 len [] = 0
 len l  = 1 + len (tail l)
@@ -81,7 +80,7 @@ buildMaxHeap l  i = buildMaxHeap(heapfy l i) (i-1)
 heapSort :: [Int] -> [Int]
 heapSort []     = []
 heapSort (a:[]) = [a]
-heapSort l  =  heapSort(buildMaxHeap (tail l) (len (tail l))) ++ [head l]
+heapSort l  =  heapSort(tail (buildMaxHeap l (len l))) ++ [head (buildMaxHeap l (len l))]
 
 -- Exercicios de aula
 
@@ -136,9 +135,6 @@ livros ((p,l):bd) ps
    |p == ps = l : (livros bd ps)
    |otherwise = livros bd ps
 
-livros2 :: BancoDados -> Pessoa -> [Livro]
-livros2 bd ppl = [l|(p, l)<-baseExemplo, ppl == p]
-
 emprestimo :: BancoDados -> Livro -> [Pessoa]
 emprestimo [] liv = []
 emprestimo ((p,l):bd) liv
@@ -168,3 +164,27 @@ devolver ((p,l):bd) pp liv
   |p == "" = (p,l) : devolver bd pp liv
   |p == pp && l == liv = bd
   |otherwise = (p,l) : devolver bd pp liv
+
+membro :: [Int] -> Int -> Bool
+membro lis n = (length[x|x <- lis, x == n]) > 0
+
+livros2 :: BancoDados -> Pessoa -> [Livro]
+livros2 bd ppl = [l|(p, l) <- bd, ppl == p]
+
+emprestimos2 :: BancoDados -> Livro -> [Pessoa]
+emprestimos2 bd liv = [p|(p,l) <- bd, l == liv]
+
+emprestado2 :: BancoDados -> Livro -> Bool
+emprestado2 bd liv = (length[p|(p,l) <- bd, l == liv]) > 0
+
+qtdEmprestimos2 :: BancoDados -> Pessoa -> Int
+qtdEmprestimos2 bd ps = length[l|(p,l)<-bd, p==ps]
+
+devolver2 :: BancoDados -> Pessoa -> Livro -> BancoDados
+devolver2 bd ps liv = [(p,l)|(p,l) <- bd, p/=ps && l /= liv]
+
+-- Quicksort usando compressão de lista
+	--conferir: recursão sem parada
+qSortCL :: [Int] -> [Int]
+qSortCL lis = qSortCL ([x|x <- lis, (x<(head lis))] ++ (head lis) : [x|x<- lis, (x >= (head lis))] )
+
