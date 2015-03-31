@@ -73,12 +73,15 @@ getIndex ls cont x y n
 getVizinhosX :: [Int] -> Int -> Int -> Int -> [Int]
 getVizinhosX [] x y n = []
 getVizinhosX ls x y 0 = []
-getVizinhosX ls x y n = ((getIndex ls 0 x y n) : (getVizinhosX ls 0 (x+n-1) y n))
+getVizinhosX ls x y n = ((getIndex ls 0 (x+n-1) y n) : (getVizinhosX ls (x+n-1) y n))
 
 getVizinhosY :: [Int] -> Int -> Int -> Int -> [Int]
 getVizinhosY [] x y n = []
 getVizinhosY ls x y 0 = []
-getVizinhosY ls x y n = ((getIndex ls 0 x y n) : (getVizinhosY ls 0 x (y+n-1) n))
+getVizinhosY ls x y n = ((getIndex ls 0 x y n) : (getVizinhosY ls x (y+n-1) n))
 
 putTogether :: [[Int]] -> Int -> Int -> Int -> Int
-putTogether ls n x y = getMediana (qsort (((getVizinhosX (conca ls) 0 x y n) ++ (getVizinhosY (conca ls) 0 x y n))) (length ls) 0)
+putTogether ls n x y = getMediana (qsort (getVizinhoS (conca ls) x y n) )  (length ls) 0
+
+getVizinhoS :: [Int] -> Int -> Int -> Int -> Int
+getVizinhoS ls n x y = (getVizinhosX ls x y n) ++ (getVizinhosY ls x y n)
