@@ -45,9 +45,6 @@ reduzNum n = div (n - mod n 10) 10
 
 --[[1,2,3],[4,5,6],[7,8,9]]
 
-qsort :: [Int] -> [Int]
-qsort (a:as) = [x | x <- as, x<a] ++ [a] ++ [x | x<- as, x>=a]
-
 --l == tamanho da lista,  m == contador
 getMediana :: [Int] -> Int -> Int -> Int
 getMediana [] l m  = 0
@@ -70,18 +67,23 @@ getIndex ls cont x y n
    |otherwise = getIndex (tail ls) (cont + 1) x y n
 
 -- simplesmente pega os vizinhos pelo index
-getVizinhosX :: [Int] -> Int -> Int -> Int -> [Int]
-getVizinhosX [] x y n = []
-getVizinhosX ls x y 0 = []
-getVizinhosX ls x y n = ((getIndex ls 0 (x+n-1) y n) : (getVizinhosX ls (x+n-1) y n))
+getVizinhosX :: [Int] -> Int -> Int -> Int -> Int -> [Int]
+getVizinhosX ls x y n t
+   |ls == [] = []
+   |n <= 0 = []
+   |otherwise = ((getIndex ls 0 x y t) : (getVizinhosX ls (x+n-1) y (n-1) t))
 
-getVizinhosY :: [Int] -> Int -> Int -> Int -> [Int]
-getVizinhosY [] x y n = []
-getVizinhosY ls x y 0 = []
-getVizinhosY ls x y n = ((getIndex ls 0 x y n) : (getVizinhosY ls x (y+n-1) n))
+getVizinhosY :: [Int] -> Int -> Int-> Int -> Int -> [Int]
+getVizinhosY ls x y n t
+   |ls == [] = []
+   |n <= 0 = []
+   |otherwise = ((getIndex ls 0 x y t) : (getVizinhosY ls (x+1) (y+n-1) (n-1)) t)
 
 putTogether :: [[Int]] -> Int -> Int -> Int -> Int
 putTogether ls n x y = getMediana (qsort (getVizinhoS (conca ls) x y n) )  (length ls) 0
 
-getVizinhoS :: [Int] -> Int -> Int -> Int -> Int
-getVizinhoS ls n x y = (getVizinhosX ls x y n) ++ (getVizinhosY ls x y n)
+getVizinhoS :: [Int] -> Int -> Int -> Int -> [Int]
+getVizinhoS ls n x y = (getVizinhosX ls (x+n-1) y (n-1) n) ++ (getVizinhosY ls x (y+n-1) (n-1) n)
+
+qsort :: [Int] -> [Int]
+qsort (a:as) = [x | x <- as, x<a] ++ [a] ++ [x | x<- as, x>=a]
