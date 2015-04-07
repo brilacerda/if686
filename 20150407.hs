@@ -36,3 +36,19 @@ contido (a:as) xis
     |a == xis = True
     |otherwise = contido as xis
 
+data Expr = Lit Int |
+   Add Expr Expr |
+   Sub Expr Expr
+
+data List t = Nil |
+   Cons t (List t)
+
+data Tree t = NilT |
+   Node t (Tree t) (Tree t) 
+   deriving (Eq, Show)
+
+showExpr :: Expr -> String
+showExpr (Lit x) = show x
+showExpr (Add a b) = showExpr a ++ " + " ++ showExpr b
+showExpr (Sub a b) = showExpr a ++ " - " ++ showExpr b
+
