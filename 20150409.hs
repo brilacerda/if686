@@ -1,14 +1,15 @@
-data Node t = Node Float t [Node t] 
+data Nodes t = Node Float t [(Nodes t)] 
    deriving (Eq, Show)
 
-data DirectedGraph t = [(Node t)]
+data DirectedGraph t = DirectedGraph [(Nodes t)]
    deriving (Eq, Show)
    
 findDFS :: DirectedGraph t -> t -> Bool
 findDFS [] = False
-findDFS (Branch peso valor ((Node p v []):graph)) v 
-   |valor == v = True
-   |otherwise findDFS graph v
-findDFS (Branch peso valor graph) v 
+findDFS (Node peso valor ((Node p n []):graph) ) v 
+   |valor == n || valor == v = True
+   |otherwise = findDFS graph v
+
+findDFS (Node peso valor graph) v 
    |valor == v = True
    |otherwise = findDFS (head graph) v -- não folha
