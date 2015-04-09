@@ -47,3 +47,22 @@ removeRepetido lista = [x| x <- lista, naoExiste x lista]
 
 union :: [t] -> [t] -> [t]
 union a b = foldr naoExiste [] (a ++ b)
+
+--usando só map
+toAlphabet :: String -> Int
+toAlphabet "" = 0
+toAlphabet (a:as) = (ord a - 96) + (toAlphabet as)
+
+alphabetSum list = map toAlphabet list
+
+--usando decentemente o map e o foldr
+toAlphabet :: String -> [Int]
+toAlphabet "" = [0]
+toAlphabet (a:as) = ((ord a - 96) + (head (toAlphabet as)):[])
+
+--O retorno da função passada por parâmetro é sempre  
+--do tipo de retorno do foldr
+alphabetSum :: [[Char]] -> [Int]
+alphabetSum list = foldr (++) [] (map toAlphabet list)
+
+
