@@ -63,8 +63,13 @@ fromList :: (Show t) => [t] -> List t
 fromList [] = Nul
 fromList (l:ls) = (Cons l (fromList ls))
 
--- teste: depth (Node 5 (Node 3 (Nult)) (Node 2 (Node 3 (Nult))))
+-- teste depth (Node 5 (Node 3 (NulT) (NulT)) (Node 2 (Node 3 (NulT) (NulT)) (NulT)))
 depth :: Tree t -> Int
 depth NulT = 0
-depth (Node c a b) = 1+ max ((depth a), (depth b))
+depth (Node c a b) = 1 + max (depth a) (depth b)
 
+--mapTree (2*) (Node 5 (Node 3 (NulT) (NulT)) (Node 2 (Node 3 (NulT) (NulT)) (NulT)))
+
+mapTree:: (t -> u) -> Tree t -> Tree u
+mapTree fun NulT = NulT
+mapTree fun (Node x a b) = Node (fun x) (mapTree fun a) (mapTree fun b)
