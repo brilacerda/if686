@@ -67,7 +67,7 @@ fromList (l:ls) = (Cons l (fromList ls))
 --estrutura basica: depth (Node 4 (NulT) (NulT))
 depth :: Tree t -> Int
 depth NulT = 0
-depth (Node c a b) = 1+ (max (depth a) (depth b))
+depth (Node c a b) = 1 + (max (depth a) (depth b))
 
 --não sei o que collapse faz
 --collapse :: Tree t -> [t]

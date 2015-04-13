@@ -3,8 +3,9 @@ import Data.Char
 -- Trabalho 6
 
 -- [lista de nós] [aresta, aresta, peso]
-data DirectedGraph t = DirectedGraph [t] [t, t, Int]
+data DirectedGraph t = DirectedGraph [t] [(t, t, Int)]
    deriving (Eq, Show)
+
 {-   
 findDFS :: DirectedGraph t -> t -> Bool
 findDFS Nul v = False
