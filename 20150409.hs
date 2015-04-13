@@ -1,14 +1,13 @@
 import Data.Char
 
 -- Trabalho 6
-data Nodes t = Node Float t [(Nodes t)] 
-   deriving (Eq, Show)
 
-data DirectedGraph t = DirectedGraph [(Nodes t)]
+-- [lista de nós] [aresta, aresta, peso]
+data DirectedGraph t = DirectedGraph [t] [t, t, Int]
    deriving (Eq, Show)
-   
+{-   
 findDFS :: DirectedGraph t -> t -> Bool
-findDFS [] v = False
+findDFS Nul v = False
 findDFS (Node peso valor ((Node p n []):graph) ) v 
    |valor == n || valor == v = True
    |otherwise = findDFS graph v
@@ -16,6 +15,7 @@ findDFS (Node peso valor ((Node p n []):graph) ) v
 findDFS (Node peso valor graph) v 
    |valor == v = True
    |otherwise = findDFS (head graph) v -- não folha
+-}
 
 --Exercicios de Aula
 
@@ -28,41 +28,34 @@ posicaoAlfabeto s = map praAlfabeto s
 
 --antes da | na compressão de lista entra a condição, 
 --após a vírgula são apenas condições, nesse caso não existe
-map :: (t -> u) -> [t] -> [u]
-map f [] = []
-map f list = [f a| a <- list]
+map2 :: (t -> u) -> [t] -> [u]
+map2 f [] = []
+map2 f list = [f a| a <- list]
 
 member :: (Eq t) => t -> [t] -> Bool
 member x lis = foldr (||) False (map (==x) lis)
 
---not working 
-naoExiste :: t -> [t] -> [t]
-naoExiste x [] = (x:[])
-naoExiste x (a:as)
-   |x == a = []
-   |otherwise = naoExiste x as
+--union
+unir :: (Eq t) => t -> [t] -> [t]
+unir x lis 
+   |member x lis = lis
+   |otherwise = x:lis
 
-removeRepetido :: [t] -> [t]
-removeRepetido lista = [x| x <- lista, naoExiste x lista]
+toSet :: (Eq t) => [t] -> [t]
+toSet list = foldr unir [] list
 
-union :: [t] -> [t] -> [t]
-union a b = foldr naoExiste [] (a ++ b)
+union :: (Eq t) => [t] -> [t] -> [t]
+union a b = foldr unir (toSet a) b
+--fim Union
 
---usando só map
-toAlphabet :: String -> Int
-toAlphabet "" = 0
-toAlphabet (a:as) = (ord a - 96) + (toAlphabet as)
-
-alphabetSum list = map toAlphabet list
+usandoOrd :: Char -> Int -> Int
+usandoOrd c ac = (ord c - 96) + ac
 
 --usando decentemente o map e o foldr
-toAlphabet :: String -> [Int]
-toAlphabet "" = [0]
-toAlphabet (a:as) = ((ord a - 96) + (head (toAlphabet as)):[])
+toAlphabet :: String -> Int
+toAlphabet pal = foldr usandoOrd 0 pal
 
 --O retorno da função passada por parâmetro é sempre  
 --do tipo de retorno do foldr
 alphabetSum :: [[Char]] -> [Int]
-alphabetSum list = foldr (++) [] (map toAlphabet list)
-
-
+alphabetSum list = (map toAlphabet list)
