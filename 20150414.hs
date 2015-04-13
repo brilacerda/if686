@@ -42,7 +42,7 @@ aux :: Tree t -> (t -> Bool) -> Tree t
 aux Nul f = Nul
 aux (Node x a b) f
    |f x = Node x (aux a f) (aux b f)
-   |otherwise = Nul
+   |otherwise = Nul --consertar aqui
    
 filterTree :: (t -> Bool) -> Tree t -> [Tree t]
 filterTree f Nul = []
