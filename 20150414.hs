@@ -38,16 +38,50 @@ sumWeight (a, b, c) memo = c + memo
 data Tree t = Nul | Node t (Tree t) (Tree t) 
    deriving Show
 
-aux :: Tree t -> (t -> Bool) -> Tree t
-aux Nul f = Nul
-aux (Node x a b) f
-   |f x = Node x (aux a f) (aux b f)
+filterTreeAux :: Tree t -> (t -> Bool) -> Tree t
+filterTreeAux Nul f = Nul
+filterTreeAux (Node x a b) f
+   |f x = Node x (filterTreeAux a f) (filterTreeAux b f)
    |otherwise = Nul --consertar aqui
    
 filterTree :: (t -> Bool) -> Tree t -> [Tree t]
 filterTree f Nul = []
 filterTree f (Node x a b)
-   |f x = [aux (Node x a b) f ]
-   |otherwise = [aux a f] ++ [aux b f]
+   |f x = [filterTreeAux (Node x a b) f ]
+   |otherwise = [filterTreeAux a f] ++ [filterTreeAux b f]
 
 
+--Exercícios de sala
+-- sumBiggerThen 8 [[2, 1, 4], [8, 5, 3], [1, 9, 3]]
+
+sumBiggerThen :: Int -> [[Int]] -> [[Int]]
+sumBiggerThen n lis = filter  (\x -> (foldr (+) 0 x) >= n ) lis
+
+sumBiggerThenPred :: Int -> [[Int]] -> [[Int]]
+sumBiggerThenPred n l = filter predic l
+      where predic x = ((foldr (+) 0 x) >= n) --para um x qualquer
+
+{- 
+(f . g) x =  é uma função. 
+g é aplicado primeiramente a x e dps f é aplicado a f(g x)
+(.) :: (u -> v) -> (t -> u) -> (t -> v)
+
+(.) f g x = f(g x)
+
+
+OBS.:
+
+*Main> (-10)
+-10
+*Main> (10-) 5
+5
+*Main> (-) 10 5
+5
+*Main> (\x ->10 - x) 5
+5
+
+-}
+
+mapFilter :: (a -> Bool) -> [[a]] -> [[a]]
+mapFilter f [] = []
+mapFilter f l =  
