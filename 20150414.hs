@@ -38,16 +38,14 @@ sumWeight (a, b, c) memo = c + memo
 data Tree t = Nul | Node t (Tree t) (Tree t) 
    deriving Show
 
-aux :: Tree t -> (t -> Bool) -> Tree t
-aux Nul f = Nul
-aux (Node x a b) f
-   |f x = Node x (aux a f) (aux b f)
+filterTree' :: Tree t -> (t -> Bool) -> Tree t
+filterTree' Nul f = Nul
+filterTree' (Node x a b) f
+   |f x = Node x (filterTree' a f) (filterTree' b f)
    |otherwise = Nul --consertar aqui
    
 filterTree :: (t -> Bool) -> Tree t -> [Tree t]
 filterTree f Nul = []
 filterTree f (Node x a b)
-   |f x = [aux (Node x a b) f ]
-   |otherwise = [aux a f] ++ [aux b f]
-
-
+   |f x = [filterTree' (Node x a b) f ]
+   |otherwise = filterTree f a ++ filterTree f b
