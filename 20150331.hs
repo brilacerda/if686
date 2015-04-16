@@ -112,7 +112,8 @@ getVizinhoS :: [Int] -> Int -> Int -> Int -> [Int]
 getVizinhoS ls n x y = (getVizinhosX ls (x+n-1) y (n-1) n) ++ (getVizinhosY ls x (y+n-1) (n-1) n)
 
 qsort :: [Int] -> [Int]
-qsort (a:as) = [x | x <- as, x<a] ++ [a] ++ [x | x<- as, x>=a]
+qsort [] = []
+qsort (a:as) = (qsort [x | x <- as, x<a]) ++ [a] ++ (qsort [x | x <- as, x >= a])
 
 -- Exercicios
 
