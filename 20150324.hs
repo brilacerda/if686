@@ -184,7 +184,7 @@ devolver2 :: BancoDados -> Pessoa -> Livro -> BancoDados
 devolver2 bd ps liv = [(p,l)|(p,l) <- bd, p/=ps && l /= liv]
 
 -- Quicksort usando compressão de lista
-	--conferir: recursão sem parada
-qSortCL :: [Int] -> [Int]
-qSortCL lis = qSortCL ([x|x <- lis, (x<(head lis))] ++ (head lis) : [x|x<- lis, (x >= (head lis))] )
+qsortCL :: [Int] -> [Int]
+qsortCL [] = []
+qsortCL (a:as) = (qsort [x | x <- as, x < a]) ++ [a] ++ (qsort [x | x <- as, x >= a])
 
