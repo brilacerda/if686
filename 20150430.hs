@@ -36,12 +36,34 @@ instance Monad Failable where
    (>>=) (Error str) _ = Error str
    return n = Correct n
 
-data Fila t = First t | Rest [t]
+data Stack t = Fila Int [t] | Empty Int
    deriving Show
 
-criarFila :: (Show t) => Int -> t -> Failable (t, Fila t)
+criarFila :: (Show t) => Int -> t -> Failable (t, Stack t)
 criarFila n first 
    |n <= 0 = Error "Out of Capacity"
-   |n > 0 = Correct (first, First first)
+   |n > 0 = Correct (first, Fila (n-1) [first])
 
 
+--push 3 (Fila (-1) [3,0,4,6])
+
+push :: (Show t) => t -> Stack t -> Failable (t, Stack t)
+push elmto (Empty cap) = criarFila cap elmto
+push elmto (Fila cap fila) 
+   |cap > 0  = Correct (elmto, Fila (cap-1) (elmto:fila))
+   |cap <= 0 = Error "Out of Capacity"
+
+
+--pop (Fila 2 [9, 4, 6])
+
+pop :: Stack t -> Failable (t, Stack t)
+pop (Empty cap) = Error "Empty stack"
+pop (Fila cap (f:fs)) = Correct (f, Fila (cap+1) fs)
+
+
+--peek (Empty 1)
+--peek (Fila 2 [0,3,4,6])
+
+peek :: Stack t -> Failable (t, Stack t)
+peek (Empty cap) = Error "There is no element on the stack"
+peek (Fila cap (f:fs)) = Correct (f, Fila cap (f:fs))
