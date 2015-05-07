@@ -88,7 +88,8 @@ main' = do {
   l <- remove k 20;
   m <- put l (22, 2);
   n <- put m (26, 3);
-  remove n 2
+  return n
+  --remove n 2
 }
 
 
