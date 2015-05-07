@@ -71,9 +71,8 @@ put hs (k, v)
    |hasKey hs k = Nothing
    |otherwise = Just ((k, v):hs)
 
-{- Não sei pq não funciona
 
-main' :: Hash t v
+main' :: Maybe (Hash Int Int)
 main' = do {
   a <- put hash (0,9);
   b <- put a (6,3);
@@ -89,10 +88,9 @@ main' = do {
   l <- remove k 20;
   m <- put l (22, 2);
   n <- put m (26, 3);
-  return n
+  remove n 2
 }
 
--}
 
 --Questão 2
 
