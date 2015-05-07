@@ -98,7 +98,7 @@ main' = do {
 
 isPonctuation :: Char -> Bool
 isPonctuation c 
-   |(32 < (ord c) && (ord c) < 65) || (90 < (ord c) && (ord c) < 97) || 122 < (ord c) && (ord c) < 127 = True
+   |(32 < (ord c) && (ord c) < 65) || (90 < (ord c) && (ord c) < 97) || (122 < (ord c) && (ord c) < 127) = True
    |otherwise = False
 
 hasPonctuation :: String -> Bool
@@ -108,16 +108,16 @@ hasPonctuation (s:tr)
    |otherwise = hasPonctuation tr
 
 verifica :: String -> String -> Maybe String
-verifica [] _ = Nothing
+verifica [] dados = Just (dados)
 verifica (s:tr) dados
    |hasPonctuation (s:tr) = Nothing
    |(96 < (ord s)) &&  ((ord s) < 123) = verifica tr ((toUpper s):dados) --é minuscula
    |(64 < (ord s)) && ((ord s) < 91) = verifica tr (s:dados) -- é maiúscula
    |((ord s) == 32) = verifica tr (('\n'):dados) -- espaço
-   |s == '\n' = Just (reverse dados) --caso seja enter emprima
+   --s ==  Just (reverse dados) --caso seja enter emprima
 
 f :: Maybe String -> IO ()
-f Nothing = putStr "Deu Nothing Amigaaaaa"
+f Nothing = putStrLn "Nothing"
 f (Just []) = putStr ""
 f (Just str) = putStrLn str
 
