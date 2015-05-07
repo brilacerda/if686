@@ -108,14 +108,13 @@ hasPonctuation (s:tr)
    |otherwise = hasPonctuation tr
 
 verifica :: String -> String -> Maybe String
-verifica [] dados = Just (dados)
+verifica [] dados = Just (reverse dados)
 verifica (s:tr) dados
    |hasPonctuation (s:tr) = Nothing
    |(96 < (ord s)) &&  ((ord s) < 123) = verifica tr ((toUpper s):dados) --é minuscula
    |(64 < (ord s)) && ((ord s) < 91) = verifica tr (s:dados) -- é maiúscula
    |((ord s) == 32) = verifica tr (('\n'):dados) -- espaço
-   --s ==  Just (reverse dados) --caso seja enter emprima
-
+   
 f :: Maybe String -> IO ()
 f Nothing = putStrLn "Nothing"
 f (Just []) = putStr ""
