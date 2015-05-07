@@ -71,11 +71,34 @@ put hs (k, v)
    |hasKey hs k = Nothing
    |otherwise = Just ((k, v):hs)
 
+{- Não sei pq não funciona
+
+main' :: Hash t v
+main' = do {
+  a <- put hash (0,9);
+  b <- put a (6,3);
+  c <- remove b 2;
+  d <- put c (20, 1);
+  e <- put d (7, 4);
+  f <- remove e 1;
+  g <- put f (2,0);
+  h <- put g (12, 6);
+  i <- remove h 0;
+  j <- put i (0, 1);
+  k <- put j (29, 2);
+  l <- remove k 20;
+  m <- put l (22, 2);
+  n <- put m (26, 3);
+  return n
+}
+
+-}
+
 --Questão 2
 
 isPonctuation :: Char -> Bool
 isPonctuation c 
-   |32 < (ord c) && (ord c) < 65 || 90 < (ord c) && (ord c) < 97 || (ord c) < 122 && (ord c) < 127 = True
+   |(32 < (ord c) && (ord c) < 65) || (90 < (ord c) && (ord c) < 97) || 122 < (ord c) && (ord c) < 127 = True
    |otherwise = False
 
 hasPonctuation :: String -> Bool
@@ -88,15 +111,21 @@ verifica :: String -> String -> Maybe String
 verifica [] _ = Nothing
 verifica (s:tr) dados
    |hasPonctuation (s:tr) = Nothing
-   |(96 < (ord s)) &&  ((ord s) < 123) = verifica tr (s:dados) --é minuscula
-   |(64 < (ord s)) && ((ord s) < 91) = verifica tr ((toUpper s):dados) -- é maiúscula
+   |(96 < (ord s)) &&  ((ord s) < 123) = verifica tr ((toUpper s):dados) --é minuscula
+   |(64 < (ord s)) && ((ord s) < 91) = verifica tr (s:dados) -- é maiúscula
    |((ord s) == 32) = verifica tr (('\n'):dados) -- espaço
    |s == '\n' = Just (reverse dados) --caso seja enter emprima
+
+f :: Maybe String -> IO ()
+f Nothing = putStr "Deu Nothing Amigaaaaa"
+f (Just []) = putStr ""
+f (Just str) = putStrLn str
 
 main :: IO ()
 main = do {
     str <- getLine;
-    putStrLn (verifica str []);
+    var <- f (verifica str []);
+    return var;
     --putStrLn str;
     main
 }
