@@ -74,22 +74,66 @@
 
 */
 
-		class Node {
-		int value;
-		Node left;
-		Node right;
+package aula13;
 
-			public Node(int val, Node dir, Node esq){
-				value = val;
-				right = dir;
-				left = esq;
+class ArvoreBusca{
+	double value;
+	ArvoreBusca left;
+	ArvoreBusca right;
+
+	public ArvoreBusca(double val){
+		value = val;
+		left =  null;
+		right = null;
+	}
+	
+	public ArvoreBusca(double val, ArvoreBusca esq, ArvoreBusca dir){
+		value = val;
+		left =  esq;
+		right = dir;
+	}
+
+	public ArvoreBusca inserir(ArvoreBusca arv, double val){
+		if(arv.left == null && (val <= arv.value)){
+			arv.left = new ArvoreBusca(val, null, null);
+		} else if(arv.right == null && (val > arv.value)){
+			arv.right = new ArvoreBusca(val, null, null);				
+		} else {
+			if(val > arv.value){
+				inserir(arv.right, val);
+			} else {
+				inserir(arv.left, val);
 			}
 		}
+		return arv;
+	}
 
-		public class ArvoreBusca {
+	public void inorder(ArvoreBusca arv){
+		
+		if(arv.left != null){
+			inorder(arv.left);
+		} else {
+			//se for null não faz nada
+		}
+		
+		if(arv.right != null){
+			System.out.print(" -> " + arv.value);
+			inorder(arv.right);
+		} else {
+			System.out.print(" -> " + arv.value);
+		}
+		
+	}
+	
 
-			sycronized void insert(int val){
-				
-			}
-
-		}	
+	public static void main(String[] args) {
+		ArvoreBusca arv = new ArvoreBusca(13);
+		arv = arv.inserir(arv, 7);
+		arv = arv.inserir(arv, 3);
+		arv = arv.inserir(arv, 6);
+		arv = arv.inserir(arv, 9);
+		arv =  arv.inserir(arv, 21);
+		arv = arv.inserir(arv, 5);
+		arv.inorder(arv);
+	}
+}
