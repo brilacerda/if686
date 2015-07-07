@@ -74,26 +74,28 @@
 
 */
 
-package aula13;
+//package aula13;
 
-class ArvoreBusca{
+public class ArvoreBusca{
 	double value;
 	ArvoreBusca left;
 	ArvoreBusca right;
+	static ArvoreBusca arv = new ArvoreBusca(Math.random()*10000);
+
 
 	public ArvoreBusca(double val){
 		value = val;
 		left =  null;
 		right = null;
 	}
-	
+
 	public ArvoreBusca(double val, ArvoreBusca esq, ArvoreBusca dir){
 		value = val;
 		left =  esq;
 		right = dir;
 	}
 
-	public ArvoreBusca inserir(ArvoreBusca arv, double val){
+	public static ArvoreBusca inserir(ArvoreBusca arv, double val){
 		if(arv.left == null && (val <= arv.value)){
 			arv.left = new ArvoreBusca(val, null, null);
 		} else if(arv.right == null && (val > arv.value)){
@@ -108,32 +110,86 @@ class ArvoreBusca{
 		return arv;
 	}
 
-	public void inorder(ArvoreBusca arv){
-		
+	public static void inorder(ArvoreBusca arv){
+
 		if(arv.left != null){
 			inorder(arv.left);
 		} else {
 			//se for null não faz nada
 		}
-		
+
 		if(arv.right != null){
 			System.out.print(" -> " + arv.value);
 			inorder(arv.right);
 		} else {
 			System.out.print(" -> " + arv.value);
 		}
-		
+
 	}
-	
+
+	public synchronized static void addElement(ArvoreBusca arv) {
+		arv = inserir(arv, (Math.random()*10000));
+	}
 
 	public static void main(String[] args) {
-		ArvoreBusca arv = new ArvoreBusca(13);
-		arv = arv.inserir(arv, 7);
-		arv = arv.inserir(arv, 3);
-		arv = arv.inserir(arv, 6);
-		arv = arv.inserir(arv, 9);
-		arv =  arv.inserir(arv, 21);
-		arv = arv.inserir(arv, 5);
-		arv.inorder(arv);
+		long ini =  System.currentTimeMillis();
+		Thread[] t = new InserirElementoComThread[50];
+
+		for (int i = 0; i < 50; i++) {
+			t[i] = new InserirElementoComThread();
+			t[i].start();
+		}
+
+		for (int i = 0; i < 50; i++) {
+			try {
+				t[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		long fim = System.currentTimeMillis();
+		double d = (fim-ini);
+		System.out.println();
+		System.out.println("Tempo de execução com 50 threads: " + d +" ms\n");
+		inorder(arv);
 	}
+
+	//main para uma thread apenas
+
+	//	public static void main(String[] args) {
+	//		long ini =  System.currentTimeMillis();
+	//		ArvoreBusca arv = new ArvoreBusca(13);
+	//		for (int i = 0; i < 1000000; i++) {
+	//			arv = inserir(arv, (int)(Math.random()*10000));
+	//		}
+	//		//inorder(arv);
+	//		long fim = System.currentTimeMillis();
+	//		double d = (fim-ini);
+	//		System.out.println();
+	//		System.out.println("Tempo de execução com 1 thread: " + d +" ms\n");
+	//		
+	////		Tempo de execução com 1 thread: 4220.0 ms   //4,22s
+	////		Tempo de execução com 1 thread: 4339.0 ms   //4,33s
+	////		Tempo de execução com 1 thread: 4284.0 ms   //4.28s
+	//	}
+
+
+
+	static class InserirElementoComThread extends Thread{
+
+		public void run(){
+			int i = 0;
+			while(i < 2000)	{
+				addElement(arv);
+				System.out.println(i);
+				i++;
+			}
+		}
+	}
+
+	//	Tempo de execução com 50 threads: 4462.0 ms   //3,46s
+	//	Tempo de execução com 50 threads: 4301.0 ms   //4,30s
+	//	Tempo de execução com 50 threads: 4609.0 ms   //4,60s
+
 }
