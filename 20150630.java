@@ -83,3 +83,103 @@ class Ficha{
 *		
 *		
 */
+
+
+//Exercicios da aula 14
+
+import java.util.concurrent.locks.*;
+
+public class VetorThreadSafe{
+	static int[] vetor = new int [3];
+	static Lock locker = new ReentrantLock();
+
+	public int read(int pos){
+		return vetor[pos];
+	}
+
+	public void write(int pos, int val){
+		
+		locker.lock();
+		
+		try{
+			vetor[pos] = val;
+		} finally{
+			locker.unlock();
+		}
+	}
+
+	public void swap(int pos1, int pos2, VetorThreadSafe vts){
+		Boolean l1 = locker.tryLock();
+		Boolean l2 = vts.locker.tryLock();
+		int aux;
+
+		try{
+			while(!(l1 && l2)){
+				if(!l1) locker.unlock();
+				if(!l2) vts.locker.unlock();
+				l1 = locker.tryLock();
+				l2 = vts.locker.tryLock();
+			}
+
+		aux = vetor[pos1];
+		vetor[pos1] = vetor[pos2];
+		vetor[pos2] = aux;
+		} finally{
+			locker.unlock();
+			vts.locker.unlock();
+		}
+	}
+
+	public static void main(String[] args) {
+		VetorThreadSafe v = new VetorThreadSafe();
+		Thread pr = new Produtor(v);
+		Thread cns = new Consumidor(v);
+
+		pr.start();
+		cns.start();
+	}
+}	
+
+class Produtor extends Thread{
+	VetorThreadSafe vts;
+
+	public Produtor(VetorThreadSafe v){
+		vts = v;
+	}
+
+	public void run(){
+		for (int i = 0; i < 3; i++) {
+			for (int j = 1; j < 5; j++) {
+				vts.write(i, j+5);
+
+				System.out.print("write ");
+				for(int k = 0; k < 3; k++){
+					System.out.print(vts.read(i) + " ");
+				}
+				System.out.println();
+			}		
+		}
+	}
+}
+
+class Consumidor extends Thread{
+	VetorThreadSafe vts;
+
+	public Consumidor(VetorThreadSafe v){
+		vts = v;
+	}
+
+	public void run(){
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				vts.swap(i, j, vts);
+			
+				System.out.print("Swap ");
+				for(int k = 0; k < 3; k++){
+					System.out.print(vts.read(i) + " ");
+				}
+				System.out.println();
+			}		
+		}
+	}
+}
