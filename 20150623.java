@@ -69,7 +69,14 @@
 				se essa situação se prolongar por muito tempo nada realmente é concluído.
 		* No monitor do S.O. o processo tem atividade, diferentemente do deadlock o qual não mostra atividade.
 		
-
+*	A propriedade Liveness diz que em algum momento a execução do programa vai chegar em um estado desejável
+*	Ou seja, algo de bom acontecerá: Um processo que pode executar, será executador e/ou
+*	Uma mensagem enviada de um processo a outro será recebida
+*	Cuidados com falhas que podem ocorrer em liveness: Deadlock, Starvation & Livelock
+*
+*	Safety é a garantia de obter os valores corretos em condição de corrida.
+*	Duas threads nunca obtém acesso a uma variável compartilhada ao mesmo tempo
+*	As operações devem ser atômicas
 
 
 */
